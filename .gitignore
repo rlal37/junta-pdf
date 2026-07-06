@@ -1,0 +1,5 @@
+.DS_Store
+Thumbs.db
+
+# Configuração local do preview (aponta para caminhos temporários da sessão)
+.claude/

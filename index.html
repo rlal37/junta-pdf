@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Juntar PDF</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <h1>Juntar PDF</h1>
+      <p class="subtitle">Combine vários arquivos PDF em um único documento, direto no seu navegador.</p>
+    </header>
+
+    <main>
+      <section
+        id="dropzone"
+        class="dropzone"
+        tabindex="0"
+        role="button"
+        aria-label="Selecionar ou arrastar arquivos PDF para juntar"
+      >
+        <input type="file" id="file-input" accept="application/pdf,.pdf" multiple hidden>
+        <svg class="dropzone-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 4v11m0 0-4-4m4 4 4-4M5 18h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p class="dropzone-text">
+          <strong>Clique para selecionar</strong> ou arraste arquivos PDF aqui
+        </p>
+      </section>
+
+      <section class="file-list-section">
+        <h2 id="file-list-heading" class="visually-hidden">Arquivos selecionados</h2>
+        <p id="merge-summary" class="merge-summary" aria-live="polite"></p>
+        <ul id="file-list" class="file-list" role="list" aria-labelledby="file-list-heading"></ul>
+      </section>
+
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+
+      <div class="actions">
+        <button id="merge-btn" class="btn-primary" disabled>Juntar PDFs</button>
+      </div>
+
+      <div id="download-area" class="download-area" hidden>
+        <p class="success-message">
+          PDF pronto! <a id="download-link" class="download-link" download="documento-unido.pdf">Baixar PDF</a>
+        </p>
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      <p>Seus arquivos não saem do seu computador — tudo é processado localmente no navegador.</p>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <!-- PDF.js: usado apenas para renderizar a miniatura da primeira página de cada PDF -->
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+  <script src="script.js" type="module"></script>
+</body>
+</html>
