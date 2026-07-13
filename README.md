@@ -1,4 +1,4 @@
-# Juntar PDF
+# Junta PDF
 
 Aplicativo web para juntar múltiplos arquivos PDF em um único documento. Roda **inteiramente no navegador**, sem backend — seus arquivos nunca saem da sua máquina.
 

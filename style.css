@@ -1,202 +1,295 @@
-/* Variáveis de design (ver guia de estilo no CLAUDE.md) */
+/* ============================================================
+   Juntar PDF — direção visual "Mesa de Cartório"
+   Fundo verde-escrivaninha, arquivos como folhas de papel,
+   tinta azul de carimbo. Tipos: Archivo (+Black) e Space Mono.
+   ============================================================ */
+
 :root {
-  --color-bg: #FAFAF8;
-  --color-surface: #FFFFFF;
-  --color-text: #1F2328;
-  --color-text-secondary: #5B6168;
-  --color-accent: #2952CC;
-  --color-accent-hover: #1F3E9E;
-  --color-success: #1F8A5C;
-  --color-error: #C0473B;
-  --color-border: #E4E5E7;
+  /* Paleta */
+  --verde-mesa: #16382c;      /* feltro de escrivaninha */
+  --verde-fundo: #122e24;     /* vinheta mais escura */
+  --papel: #fbf9f3;           /* folha */
+  --papel-sombra: #efece2;    /* folha de trás */
+  --tinta: #22302a;           /* texto sobre papel */
+  --tinta-suave: #5d6862;     /* texto secundário (AA 5.5:1 sobre papel) */
+  --carimbo: #2447c0;         /* tinta azul de carimbo */
+  --carimbo-escuro: #1a3597;
+  --pauta: #dcd8ca;           /* linhas do papel */
+  --erro: #b3372c;
 
-  --space-1: 8px;
-  --space-2: 16px;
-  --space-3: 24px;
-  --space-4: 32px;
-  --space-6: 48px;
-
-  --radius: 8px;
-  --font-sans: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+  --raio: 10px;
+  --fonte-titulo: "Archivo Black", "Archivo", sans-serif;
+  --fonte-texto: "Archivo", system-ui, sans-serif;
+  --fonte-mono: "Space Mono", ui-monospace, monospace;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
 
 body {
   margin: 0;
-  background-color: var(--color-bg);
-  color: var(--color-text);
-  font-family: var(--font-sans);
-  font-size: 16px;
-  line-height: 1.5;
+  min-height: 100vh;
+  font-family: var(--fonte-texto);
+  color: var(--tinta);
+  background:
+    radial-gradient(ellipse 120% 90% at 50% -10%, var(--verde-mesa) 0%, var(--verde-fundo) 78%),
+    var(--verde-fundo);
+  background-attachment: fixed;
 }
 
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* Foco visível para todo elemento interativo */
-a:focus-visible,
-button:focus-visible,
-input:focus-visible,
-[tabindex]:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
+/* Textura sutil de feltro: linhas diagonais quase invisíveis */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(255, 255, 255, 0.014) 0 1px,
+    transparent 1px 7px
+  );
 }
 
 .app {
-  max-width: 640px;
+  position: relative;
+  max-width: 620px;
   margin: 0 auto;
-  padding: var(--space-4) var(--space-2) var(--space-6);
+  padding: 56px 20px 40px;
 }
+
+/* ---------- Cabeçalho ---------- */
 
 .app-header {
   text-align: center;
-  margin-bottom: var(--space-4);
+  color: var(--papel);
+  margin-bottom: 36px;
+}
+
+.eyebrow {
+  font-family: var(--fonte-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #a8c5b4;
+  margin: 0 0 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.eyebrow-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #7fd4a2;
+  box-shadow: 0 0 8px rgba(127, 212, 162, 0.7);
 }
 
 .app-header h1 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  margin: 0 0 var(--space-1);
+  font-family: var(--fonte-titulo);
+  font-weight: 400;
+  font-size: clamp(3.4rem, 11vw, 5.2rem);
+  line-height: 0.92;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+  margin: 0 0 18px;
 }
 
 .subtitle {
-  color: var(--color-text-secondary);
-  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.55;
+  color: #cfe0d5;
+  max-width: 40ch;
+  margin: 0 auto;
 }
 
-/* Área de drop */
+/* ---------- A folha principal (card) ---------- */
+
+.desk { position: relative; }
+
+.sheet {
+  position: relative;
+  background: var(--papel);
+  border-radius: var(--raio);
+  padding: 26px 26px 30px;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.18),
+    0 18px 44px -18px rgba(0, 0, 0, 0.55);
+}
+
+/* Folhas de trás da pilha */
+.sheet::before,
+.sheet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--papel-sombra);
+  border-radius: var(--raio);
+  z-index: -1;
+}
+
+.sheet::before { transform: rotate(-1.4deg) translateY(5px); opacity: 0.9; }
+.sheet::after  { transform: rotate(1deg) translateY(9px); opacity: 0.55; }
+
+/* ---------- Dropzone: a bandeja de entrada ---------- */
+
 .dropzone {
-  background-color: var(--color-surface);
-  border: 2px dashed var(--color-border);
-  border-radius: var(--radius);
-  padding: var(--space-4);
+  border: 2px dashed #c9c4b2;
+  border-radius: calc(var(--raio) - 2px);
+  padding: 38px 20px 30px;
   text-align: center;
-  color: var(--color-text-secondary);
   cursor: pointer;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
+  color: var(--tinta);
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 26px,
+      var(--pauta) 26px 27px
+    );
+  background-color: #fdfcf8;
+  transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
 }
 
-.dropzone:hover {
-  border-color: var(--color-accent);
+.dropzone:hover,
+.dropzone:focus-visible {
+  border-color: var(--carimbo);
+  background-color: #f6f8ff;
+}
+
+.dropzone:focus-visible {
+  outline: 3px solid var(--carimbo);
+  outline-offset: 3px;
 }
 
 .dropzone.drag-over {
-  border-color: var(--color-accent);
-  background-color: #EEF2FC;
+  border-color: var(--carimbo);
+  background-color: #eef2ff;
+  transform: scale(1.012);
 }
 
 .dropzone-icon {
-  color: var(--color-accent);
-  margin-bottom: var(--space-1);
+  color: var(--carimbo);
+  margin-bottom: 10px;
 }
 
 .dropzone-text {
+  margin: 0 0 6px;
+  font-size: 1.02rem;
+}
+
+.dropzone-text strong { color: var(--carimbo); }
+
+.dropzone-hint {
   margin: 0;
+  font-family: var(--fonte-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tinta-suave);
 }
 
-.dropzone-text strong {
-  color: var(--color-text);
-}
-
-/* Lista de arquivos */
-.file-list-section {
-  margin-top: var(--space-3);
-}
+/* ---------- Lista de arquivos: folhas empilhadas ---------- */
 
 .merge-summary {
-  color: var(--color-text-secondary);
-  font-size: 0.9rem;
-  margin: 0 0 var(--space-1);
-  min-height: 1.3em;
+  font-family: var(--fonte-mono);
+  font-size: 0.8rem;
+  color: var(--tinta-suave);
+  margin: 20px 2px 10px;
 }
+
+.merge-summary:empty { display: none; }
 
 .file-list {
   list-style: none;
-  margin: 0;
+  margin: 14px 0 0;
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: 10px;
 }
+
+.file-list:empty { margin: 0; }
 
 .file-item {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: var(--space-1) var(--space-2);
+  gap: 12px;
+  background: #fff;
+  border: 1px solid #e7e3d6;
+  border-radius: 6px;
+  padding: 10px 12px;
+  box-shadow: 0 2px 5px -2px rgba(34, 48, 42, 0.18);
+  cursor: grab;
 }
 
+.file-item:nth-child(odd)  { transform: rotate(-0.35deg); }
+.file-item:nth-child(even) { transform: rotate(0.3deg); }
+
 .file-item.dragging {
-  opacity: 0.5;
+  opacity: 0.55;
+  cursor: grabbing;
+  transform: rotate(0deg) scale(1.01);
+  box-shadow: 0 10px 22px -8px rgba(34, 48, 42, 0.35);
 }
 
 .file-item--error {
-  border-left: 3px solid var(--color-error);
+  border-color: #ecc7c2;
+  background: #fdf6f5;
 }
 
 .drag-handle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 44px;
-  min-height: 44px;
-  cursor: grab;
-  color: var(--color-text-secondary);
-  font-size: 1.1rem;
+  color: #b9b4a3;
+  font-size: 0.95rem;
   user-select: none;
+  flex-shrink: 0;
 }
 
-/* Miniatura da primeira página */
-.file-thumb-wrap {
-  flex-shrink: 0;
-  width: 40px;
-  height: 52px;
-}
+.file-thumb-wrap { flex-shrink: 0; }
 
 .file-thumb {
+  display: block;
   width: 40px;
   height: 52px;
-  object-fit: contain;
-  display: block;
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 4px;
+  object-fit: cover;
+  object-position: top;
+  border: 1px solid var(--pauta);
+  border-radius: 2px;
+  background: #fff;
 }
 
 .file-thumb--loading {
-  background-color: var(--color-bg);
-  animation: thumb-pulse 1.2s ease-in-out infinite;
+  background: linear-gradient(110deg, #f1eee4 30%, #faf8f0 50%, #f1eee4 70%);
+  background-size: 200% 100%;
+  animation: brilho 1.1s linear infinite;
+}
+
+@keyframes brilho {
+  to { background-position: -200% 0; }
 }
 
 .file-thumb--error {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: var(--color-error);
-  background-color: #FBECEA;
-  border-color: var(--color-error);
+  font-family: var(--fonte-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--erro);
+  background: #fbeae8;
+  border-color: #ecc7c2;
 }
 
-@keyframes thumb-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+/* Fallback quando a miniatura não pôde ser gerada (arquivo válido, render falhou) */
+.file-thumb--fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--fonte-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--tinta-suave);
+  background: #f1eee4;
 }
 
 .file-info {
@@ -204,147 +297,247 @@ input:focus-visible,
   min-width: 0;
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
 .file-name {
   font-weight: 600;
+  font-size: 0.92rem;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .file-pages {
-  color: var(--color-text-secondary);
-  font-size: 0.9rem;
+  font-family: var(--fonte-mono);
+  font-size: 0.76rem;
+  color: var(--tinta-suave);
 }
 
-.file-item--error .file-pages {
-  color: var(--color-error);
-}
+.file-item--error .file-pages { color: var(--erro); }
 
 .file-item-actions {
   display: flex;
-  gap: var(--space-1);
+  gap: 4px;
   flex-shrink: 0;
 }
 
 .icon-btn {
-  min-width: 44px;
-  min-height: 44px;
-  display: flex;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 6px;
   background: transparent;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  color: var(--color-text-secondary);
-  font-size: 1rem;
+  color: #566059;
+  font-size: 0.9rem;
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition: background-color 120ms ease, color 120ms ease;
 }
 
-.icon-btn:hover {
-  background-color: var(--color-bg);
-  color: var(--color-text);
+.icon-btn:hover:not(:disabled),
+.icon-btn:focus-visible {
+  background: #eef2ff;
+  color: var(--carimbo);
+}
+
+.icon-btn.remove-btn:hover:not(:disabled),
+.icon-btn.remove-btn:focus-visible {
+  background: #fbeae8;
+  color: var(--erro);
+}
+
+.icon-btn:focus-visible {
+  outline: 2px solid var(--carimbo);
+  outline-offset: 1px;
 }
 
 .icon-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
+  opacity: 0.3;
+  cursor: default;
 }
 
-.remove-btn:hover {
-  color: var(--color-error);
-  border-color: var(--color-error);
-}
+/* ---------- Status ---------- */
 
-/* Status e feedback */
 .status {
-  margin-top: var(--space-2);
-  min-height: 1.3em;
-  font-size: 0.95rem;
+  font-family: var(--fonte-mono);
+  font-size: 0.8rem;
+  margin-top: 14px;
 }
 
-.status[data-state="loading"] {
-  color: var(--color-text-secondary);
-}
+.status:empty { display: none; }
 
+.status[data-state="loading"] { color: var(--tinta-suave); }
+.status[data-state="error"]   { color: var(--erro); }
+
+/* Sucesso: o carimbo já comunica visualmente, mas mantemos o texto no fluxo
+   de acessibilidade (display:none silenciaria o aria-live). */
 .status[data-state="success"] {
-  color: var(--color-success);
-  font-weight: 600;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
-.status[data-state="error"] {
-  color: var(--color-error);
-  font-weight: 600;
-}
+/* ---------- Botão principal: o carimbo de ação ---------- */
 
-/* Ações */
 .actions {
-  margin-top: var(--space-3);
+  margin-top: 22px;
+  text-align: center;
 }
 
 .btn-primary {
   width: 100%;
-  min-height: 48px;
-  background-color: var(--color-accent);
-  color: #FFFFFF;
+  padding: 16px 24px;
+  font-family: var(--fonte-titulo);
+  font-size: 1.05rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--papel);
+  background: var(--carimbo);
   border: none;
-  border-radius: var(--radius);
-  font-size: 1rem;
-  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: 0 4px 0 var(--carimbo-escuro);
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition: transform 100ms ease, box-shadow 100ms ease, background-color 160ms ease;
 }
 
-.btn-primary:hover:not(:disabled) {
-  background-color: var(--color-accent-hover);
+.btn-primary:hover:not(:disabled) { background: #2a51d6; }
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--carimbo-escuro);
+}
+
+.btn-primary:focus-visible {
+  outline: 3px solid var(--carimbo);
+  outline-offset: 3px;
 }
 
 .btn-primary:disabled {
-  background-color: var(--color-border);
-  color: var(--color-text-secondary);
+  background: #edeadf;
+  color: #a09a86;
+  box-shadow: none;
   cursor: not-allowed;
 }
 
-/* Download */
+.btn-hint {
+  display: none;
+  font-family: var(--fonte-mono);
+  font-size: 0.78rem;
+  color: var(--tinta-suave);
+  margin: 10px 0 0;
+}
+
+.btn-primary:disabled + .btn-hint { display: block; }
+
+/* ---------- Carimbo de sucesso ---------- */
+
 .download-area {
-  margin-top: var(--space-2);
-  padding: var(--space-2);
-  background-color: #EAF6EF;
-  border: 1px solid var(--color-success);
-  border-radius: var(--radius);
+  margin-top: 26px;
+  text-align: center;
+}
+
+.stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 22px;
+  border: 3px double var(--carimbo);
+  border-radius: 8px;
+  color: var(--carimbo);
+  font-family: var(--fonte-titulo);
+  font-size: 1.15rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transform: rotate(-3.5deg);
+  animation: carimbar 380ms cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+
+.stamp-check { font-size: 1.3rem; }
+
+@keyframes carimbar {
+  0%   { transform: rotate(-3.5deg) scale(1.7); opacity: 0; }
+  60%  { transform: rotate(-3.5deg) scale(0.96); opacity: 1; }
+  100% { transform: rotate(-3.5deg) scale(1); }
 }
 
 .success-message {
-  margin: 0;
-  color: var(--color-success);
-  font-weight: 600;
+  margin: 16px 0 0;
+  font-size: 0.95rem;
 }
 
 .download-link {
-  color: var(--color-success);
+  display: inline-block;
+  font-weight: 600;
+  color: var(--carimbo);
   text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 2px;
 }
 
-.download-link:hover {
-  color: #176E49;
+.download-link:hover { color: var(--carimbo-escuro); }
+
+.download-link:focus-visible {
+  outline: 3px solid var(--carimbo);
+  outline-offset: 3px;
+  border-radius: 3px;
 }
+
+/* ---------- Rodapé ---------- */
 
 .app-footer {
-  margin-top: var(--space-4);
+  margin-top: 34px;
   text-align: center;
-  color: var(--color-text-secondary);
-  font-size: 0.85rem;
 }
 
-/* Responsividade */
-@media (max-width: 480px) {
-  .app {
-    padding: var(--space-3) var(--space-1) var(--space-4);
-  }
+.app-footer p {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--fonte-mono);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: #9db8a8;
+  margin: 0;
+  max-width: 52ch;
+}
 
-  .file-item {
-    flex-wrap: wrap;
-  }
+.app-footer svg { flex-shrink: 0; }
+
+/* ---------- Utilitários ---------- */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Responsivo ---------- */
+
+@media (max-width: 480px) {
+  .app { padding: 40px 14px 32px; }
+  .sheet { padding: 18px 16px 22px; }
+  .dropzone { padding: 30px 14px 24px; }
+  .dropzone-or { display: block; }
+  .file-item { gap: 9px; padding: 9px 10px; }
+  .drag-handle { display: none; }
+}
+
+/* ---------- Movimento reduzido ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+  .stamp { animation: none; }
 }

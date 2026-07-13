@@ -84,7 +84,7 @@ async function handleNewFiles(fileList) {
 // Renderiza a 1ª página de cada PDF ainda sem miniatura e atualiza só a imagem daquele item.
 async function gerarThumbnailsPendentes() {
   for (const entry of files) {
-    if (entry.error || !entry.bytes || entry.thumbnail) continue;
+    if (entry.error || !entry.bytes || entry.thumbnail || entry.thumbFalhou) continue;
     await gerarThumbnail(entry);
 
     // Troca o placeholder pelo markup atualizado (span de carregamento -> imagem).
@@ -99,7 +99,20 @@ async function gerarThumbnailsPendentes() {
 // Passa uma cópia dos bytes: o PDF.js "consome" (detacha) o buffer que recebe.
 async function gerarThumbnail(entry) {
   try {
-    const doc = await pdfjsLib.getDocument({ data: entry.bytes.slice(0) }).promise;
+    // Se a renderização travar (ex: ambiente sem rasterização), desistimos
+    // após o timeout e mostramos o ícone de fallback em vez de loading eterno.
+    entry.thumbnail = await comTimeout(renderizarPrimeiraPagina(entry.bytes), 8000);
+  } catch (err) {
+    // Sem miniatura, mostramos um ícone genérico — não é motivo para bloquear o merge.
+    entry.thumbFalhou = true;
+  }
+}
+
+// Desenha a primeira página num canvas via PDF.js e devolve como data URL.
+async function renderizarPrimeiraPagina(bytes) {
+  // Passa uma cópia: o PDF.js "consome" (detacha) o buffer que recebe.
+  const doc = await pdfjsLib.getDocument({ data: bytes.slice(0) }).promise;
+  try {
     const page = await doc.getPage(1);
 
     const base = page.getViewport({ scale: 1 });
@@ -112,12 +125,17 @@ async function gerarThumbnail(entry) {
     const ctx = canvas.getContext('2d');
 
     await page.render({ canvasContext: ctx, viewport }).promise;
-    entry.thumbnail = canvas.toDataURL('image/png');
+    return canvas.toDataURL('image/png');
+  } finally {
     doc.destroy();
-  } catch (err) {
-    // Sem miniatura, mostramos um ícone genérico — não é motivo para bloquear o merge.
-    entry.thumbnail = null;
   }
+}
+
+function comTimeout(promise, ms) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms)),
+  ]);
 }
 
 // Lê o arquivo e extrai o número de páginas via pdf-lib.
@@ -296,6 +314,9 @@ function thumbMarkup(entry) {
   }
   if (entry.thumbnail) {
     return `<img class="file-thumb" src="${entry.thumbnail}" alt="Prévia da primeira página de ${escapeHtml(entry.name)}">`;
+  }
+  if (entry.thumbFalhou) {
+    return '<span class="file-thumb file-thumb--fallback" aria-hidden="true">PDF</span>';
   }
   return '<span class="file-thumb file-thumb--loading" aria-hidden="true"></span>';
 }
