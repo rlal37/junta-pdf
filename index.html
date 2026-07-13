@@ -3,57 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Juntar PDF</title>
+  <title>Juntar PDF — direto no navegador</title>
+  <meta name="description" content="Combine vários PDFs em um único arquivo, sem upload: tudo é processado localmente no seu navegador.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Archivo+Black&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="app">
     <header class="app-header">
-      <h1>Juntar PDF</h1>
-      <p class="subtitle">Combine vários arquivos PDF em um único documento, direto no seu navegador.</p>
+      <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Ferramenta local — nada sai do seu computador</p>
+      <h1>Juntar<br>PDF</h1>
+      <p class="subtitle">Empilhe seus arquivos, escolha a ordem e junte tudo em um documento só. Direto no navegador.</p>
     </header>
 
-    <main>
-      <section
-        id="dropzone"
-        class="dropzone"
-        tabindex="0"
-        role="button"
-        aria-label="Selecionar ou arrastar arquivos PDF para juntar"
-      >
-        <input type="file" id="file-input" accept="application/pdf,.pdf" multiple hidden>
-        <svg class="dropzone-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path d="M12 4v11m0 0-4-4m4 4 4-4M5 18h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <p class="dropzone-text">
-          <strong>Clique para selecionar</strong> ou arraste arquivos PDF aqui
-        </p>
-      </section>
+    <main class="desk">
+      <div class="sheet">
+        <section
+          id="dropzone"
+          class="dropzone"
+          tabindex="0"
+          role="button"
+          aria-label="Selecionar ou arrastar arquivos PDF para juntar"
+        >
+          <input type="file" id="file-input" accept="application/pdf,.pdf" multiple hidden>
+          <svg class="dropzone-icon" width="44" height="44" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M13 3H7a1.5 1.5 0 0 0-1.5 1.5v15A1.5 1.5 0 0 0 7 21h10a1.5 1.5 0 0 0 1.5-1.5V8.5L13 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M13 3v5.5h5.5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+            <path d="M12 11.5v5M9.5 14h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          <p class="dropzone-text">
+            <strong>Clique para selecionar</strong><span class="dropzone-or"> ou arraste os PDFs aqui</span>
+          </p>
+          <p class="dropzone-hint">Aceita vários arquivos de uma vez</p>
+        </section>
 
-      <section class="file-list-section">
-        <h2 id="file-list-heading" class="visually-hidden">Arquivos selecionados</h2>
-        <p id="merge-summary" class="merge-summary" aria-live="polite"></p>
-        <ul id="file-list" class="file-list" role="list" aria-labelledby="file-list-heading"></ul>
-      </section>
+        <section class="file-list-section">
+          <h2 id="file-list-heading" class="visually-hidden">Arquivos selecionados</h2>
+          <p id="merge-summary" class="merge-summary" aria-live="polite"></p>
+          <ul id="file-list" class="file-list" role="list" aria-labelledby="file-list-heading"></ul>
+        </section>
 
-      <div id="status" class="status" role="status" aria-live="polite"></div>
+        <div id="status" class="status" role="status" aria-live="polite"></div>
 
-      <div class="actions">
-        <button id="merge-btn" class="btn-primary" disabled>Juntar PDFs</button>
-      </div>
+        <div class="actions">
+          <button id="merge-btn" class="btn-primary" disabled>Juntar PDFs</button>
+          <p class="btn-hint">Adicione pelo menos <strong>2 arquivos</strong> para juntar</p>
+        </div>
 
-      <div id="download-area" class="download-area" hidden>
-        <p class="success-message">
-          PDF pronto! <a id="download-link" class="download-link" download="documento-unido.pdf">Baixar PDF</a>
-        </p>
+        <div id="download-area" class="download-area" hidden>
+          <div class="stamp" role="presentation">
+            <span class="stamp-check" aria-hidden="true">✓</span>
+            <span class="stamp-label">PDF pronto</span>
+          </div>
+          <p class="success-message">
+            <a id="download-link" class="download-link" download="documento-unido.pdf">Baixar documento-unido.pdf</a>
+          </p>
+        </div>
       </div>
     </main>
 
     <footer class="app-footer">
-      <p>Seus arquivos não saem do seu computador — tudo é processado localmente no navegador.</p>
+      <p><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="1.5" stroke="currentColor" stroke-width="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="2"/></svg> Seus arquivos não saem do seu computador — tudo é processado localmente, no navegador.</p>
     </footer>
   </div>
 
